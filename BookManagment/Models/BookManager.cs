@@ -43,7 +43,7 @@ namespace BookManagment.Models
             return true;
         }
 
-        public static void DisplayBooks()
+        public static void DisplayAllCollectionsBooks()
         {
             Console.WriteLine("\n[SET OF BOOKS]\n");
 
