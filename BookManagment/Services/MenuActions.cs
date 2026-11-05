@@ -1,7 +1,7 @@
 ﻿using BookManagment.Helpers;
 using BookManagment.Models;
 
-namespace BookManagment
+namespace BookManagment.Services
 {
     static class MenuActions
     {

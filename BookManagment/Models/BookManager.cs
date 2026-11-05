@@ -18,7 +18,7 @@ namespace BookManagment.Models
                 return false;
             }
 
-            if (AuthorToBooksSetMap.TryGetValue(book.Author, out HashSet<Book> authorsBooksSet))
+            if (AuthorToBooksSetMap.TryGetValue(book.Author, out HashSet<Book>? authorsBooksSet))
             {
                 if(!authorsBooksSet.Add(book))
                 {
