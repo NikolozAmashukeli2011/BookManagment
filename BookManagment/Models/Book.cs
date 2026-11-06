@@ -6,8 +6,10 @@ namespace BookManagment.Models
 {
     internal class Book
     {
+        public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
+        private static int Count = 0;
         private int _YearOfPublish;
         public int YearOfPublish 
         { 
@@ -35,6 +37,8 @@ namespace BookManagment.Models
 
         public Book(string title, string author, int yearOfPublish)
         {
+            Count++;
+            Id = Count;
             Title = title;
             Author = author;
             YearOfPublish = yearOfPublish;
@@ -42,7 +46,7 @@ namespace BookManagment.Models
 
         public override string ToString()
         {
-            return $"Title: {Title}, Author: {Author}, Year Of Publish: {YearOfPublish}.";
+            return $"Id: {Id}, Title: {Title}, Author: {Author}, Year Of Publish: {YearOfPublish}.";
         }
     }
 }

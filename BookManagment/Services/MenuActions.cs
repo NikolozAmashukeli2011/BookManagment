@@ -5,6 +5,11 @@ namespace BookManagment.Services
 {
     static class MenuActions
     {
+        private static int IdInput()
+        {
+            return Prompter.PromptGeneric<int>("Input book's Id: ", "Input must be an integer, try again: ");
+        }
+
         private static string TitleInput()
         {
             string title = Prompter.PromptGeneric<string>("Input new book's title: ", "input must be a text, try again: ");
@@ -45,15 +50,30 @@ namespace BookManagment.Services
             return yearOfPublish;
         }
 
-        public static void CreateAndAddBook()
+        private static Book CreateBook()
         {
             string title = TitleInput();
             string author = AuthorInput();
             int yearOfPublish = YearInput();
 
-            Book newBook = new Book(title, author, yearOfPublish);
-            BookManager.AddBook(newBook);
-            Console.WriteLine($"New Book: {newBook.ToString()}\n");
+            return new Book(title, author, yearOfPublish);
+        }
+
+        public static void AddBook()
+        {
+            Book book = CreateBook();
+
+            bool success = BookManager.AddBook(book);
+
+            if (success)
+            {
+                Console.WriteLine("Book added successfully!\n");
+                Console.WriteLine($"{book.ToString()}\n");
+            }
+            else
+            {
+                Console.WriteLine("Adding the book failed!\n");
+            }
         }
 
         public static void GetTitleAndSearchBook()
@@ -65,12 +85,47 @@ namespace BookManagment.Services
             if (BookManager.GetBookByTitle(title, out foundBook))
             {
                 Console.WriteLine("\nBook found.\n");
-                Console.WriteLine($"{foundBook.ToString()}\n");
+                Console.WriteLine($"{foundBook?.ToString()}\n");
             }
             else
             {
                 Console.WriteLine($"Book with title: {title} couldn't be found.\n");
             }
+        }
+
+        public static void GetIdAndSearchBook()
+        {
+            int id = IdInput();
+
+            Book? foundBook;
+
+            if (BookManager.GetBookById(id, out foundBook))
+            {
+                Console.WriteLine("\nBook found.\n");
+                Console.WriteLine($"{foundBook?.ToString()}\n");
+            }
+            else
+            {
+                Console.WriteLine($"Book with id: {id} couldn't be found.\n");
+            }
+        }
+
+        public static void GetBookAndRemove()
+        {
+            int id = IdInput();
+
+            if (BookManager.GetBookById(id, out Book? foundBook))
+            {
+                BookManager.RemoveBook(foundBook);
+
+                Console.WriteLine("Book removed successfully!\n");
+                Console.WriteLine($"{foundBook.ToString()}\n");
+            }
+            else
+            {
+                Console.WriteLine($"Book with id: {id} couldn't be found.");
+            }
+
         }
 
     }

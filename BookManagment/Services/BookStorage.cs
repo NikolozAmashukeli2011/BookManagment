@@ -10,7 +10,7 @@ namespace BookManagment.Services
 
         public static void Save(IEnumerable<Book> books)
         {
-            string json = JsonSerializer.Serialize(FilePath, options);
+            string json = JsonSerializer.Serialize(books, options);
 
             try
             {
@@ -32,10 +32,10 @@ namespace BookManagment.Services
         public static IEnumerable<Book> Load()
         {
             if (!File.Exists(FilePath)) return Enumerable.Empty<Book>();
-            
+
             try
             {
-                using(StreamReader sr = new StreamReader(FilePath))
+                using (StreamReader sr = new StreamReader(FilePath))
                 {
                     string json = sr.ReadToEnd();
                     return JsonSerializer.Deserialize<IEnumerable<Book>>(json) ?? Enumerable.Empty<Book>();
@@ -43,12 +43,13 @@ namespace BookManagment.Services
             }
             catch (IOException ex)
             {
-                Console.WriteLine($"Couldn't save. {ex.Message}.");
+                Console.WriteLine($"Couldn't load. {ex.Message}.");
             }
             catch (UnauthorizedAccessException ex)
             {
                 Console.WriteLine($"You don't have permission to access this file. {ex.Message}.");
-            } catch (JsonException ex)
+            }
+            catch (JsonException ex)
             {
                 Console.WriteLine($"The text isn't a valid JSON. {ex.Message}.");
             }

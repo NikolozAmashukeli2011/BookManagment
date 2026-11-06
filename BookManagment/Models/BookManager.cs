@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using BookManagment.Services;
 
 namespace BookManagment.Models
 {
@@ -9,78 +7,108 @@ namespace BookManagment.Models
         public static HashSet<Book> SetOfBooks { get; set; } = new HashSet<Book>();
         public static Dictionary<string, HashSet<Book>> AuthorToBooksSetMap { get; set; } = new Dictionary<string, HashSet<Book>>();
         public static Dictionary<string, Book> TitleToBookMap { get; set; } = new Dictionary<string, Book>();
-        public static SortedList<int, Book> YearToBookSortedList { get; set; } = new SortedList<int, Book>();
+        public static Dictionary<int, Book> IdToBookMap { get; set; } = new Dictionary<int, Book>();
+        public static SortedList<int, HashSet<Book>> YearToBooksSortedList { get; set; } = new SortedList<int, HashSet<Book>>();
+
+        static BookManager()
+        {
+            foreach (Book b in BookStorage.Load())
+            {
+                AddToAll(b);
+            }
+        }
+
+        private static void AddToAll(Book b)
+        {
+            if (!AuthorToBooksSetMap.TryGetValue(b.Author, out HashSet<Book>? booksSet))
+            {
+                booksSet = new HashSet<Book>();
+                AuthorToBooksSetMap[b.Author] = booksSet;
+            }
+
+            if (!YearToBooksSortedList.TryGetValue(b.YearOfPublish, out HashSet<Book>? booksByYear))
+            {
+                booksByYear = new HashSet<Book>();
+                YearToBooksSortedList[b.YearOfPublish] = booksByYear;
+            }
+
+            booksSet.Add(b);
+            booksByYear.Add(b);
+            TitleToBookMap.Add(b.Title, b);
+            SetOfBooks.Add(b);
+            IdToBookMap.Add(b.Id, b);
+        }
+
+
+        private static bool BookExists(Book b)
+        {
+            if (IdToBookMap.ContainsKey(b.Id)) return true; return false;
+        }
+
 
         public static bool AddBook(Book book)
         {
-            if(!SetOfBooks.Add(book))
+            if (BookExists(book))
             {
                 return false;
             }
-
-            if (AuthorToBooksSetMap.TryGetValue(book.Author, out HashSet<Book>? authorsBooksSet))
+            else
             {
-                if(!authorsBooksSet.Add(book))
-                {
-                    return false;
-                }
-            } else
-            {
-                HashSet<Book> newSetOfBooks = new HashSet<Book>() { book };
-                AuthorToBooksSetMap.Add(book.Author, newSetOfBooks);
+                AddToAll(book);
+                BookStorage.Save(SetOfBooks);
+                return true;
             }
-
-            if(!TitleToBookMap.ContainsKey(book.Title))
-            {
-                TitleToBookMap.Add(book.Title, book);
-            }
-
-            if(!YearToBookSortedList.ContainsKey(book.YearOfPublish))
-            {
-                YearToBookSortedList.Add(book.YearOfPublish, book);
-            }
-
-            return true;
         }
 
         public static void DisplayAllCollectionsBooks()
         {
-            Console.WriteLine("\n[SET OF BOOKS]\n");
-
-            foreach(Book book in SetOfBooks)
+            if (SetOfBooks.Count == 0)
             {
-                Console.WriteLine($"{book.ToString()}\n");
+                Console.WriteLine("There are no books.");
             }
-
-            Console.WriteLine("\n[AUTHOR TO BOOKS SET MAP]\n");
-
-            foreach(HashSet<Book> setOfBooks in AuthorToBooksSetMap.Values)
+            else
             {
-                foreach(Book book in setOfBooks)
+                Console.WriteLine("\n[SET OF BOOKS]\n");
+
+                foreach (Book book in SetOfBooks)
                 {
                     Console.WriteLine($"{book.ToString()}\n");
                 }
             }
 
-            Console.WriteLine("\n[TITLE TO BOOK MAP]\n");
-
-            foreach ((string title, Book book) in TitleToBookMap)
-            {
-                Console.WriteLine($"{book.ToString()}\n");
-            }
-
-            Console.WriteLine("\n[YEAR TO BOOK SORTED LIST]\n");
-
-            foreach(Book book in YearToBookSortedList.Values)
-            {
-                Console.WriteLine($"{book.ToString()}\n");
-            }
         }
 
         public static bool GetBookByTitle(string title, out Book? foundBook)
         {
-           TitleToBookMap.TryGetValue(title, out foundBook);
+            TitleToBookMap.TryGetValue(title, out foundBook);
             return foundBook != null;
+        }
+
+        public static bool GetBookById(int id, out Book? foundBook)
+        {
+            IdToBookMap.TryGetValue(id, out foundBook);
+            return foundBook != null;
+        }
+
+        public static bool RemoveBook(Book book)
+        {
+            if (BookExists(book))
+            {
+                AuthorToBooksSetMap.TryGetValue(book.Author, out HashSet<Book>? authorSet);
+                authorSet?.Remove(book);
+
+                SetOfBooks.Remove(book);
+                TitleToBookMap.Remove(book.Title);
+                IdToBookMap.Remove(book.Id);
+
+                BookStorage.Save(SetOfBooks);
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
     }
