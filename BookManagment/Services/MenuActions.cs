@@ -20,7 +20,7 @@ namespace BookManagment.Services
                                                         " and should contain atleast 1 letter, try again: ", "input must be a text, try again: ");
             }
 
-            return title;
+            return title.Trim();
         }
 
         private static string AuthorInput()
@@ -34,7 +34,7 @@ namespace BookManagment.Services
                                                         "input must be a text, try again: ");
             }
 
-            return author;
+            return author.Trim();
         }
 
         private static int YearInput()
@@ -126,6 +126,31 @@ namespace BookManagment.Services
                 Console.WriteLine($"Book with id: {id} couldn't be found.");
             }
 
+        }
+
+        public static void RemoveAllBooks()
+        {
+            
+            string choice = Prompter.PromptGeneric<string>("Are you sure that you want to remove all books? (Yes or No):",
+                                                            "Input must be a text, try again: ").Trim();
+
+            bool sure = string.Equals(choice, "Yes", StringComparison.OrdinalIgnoreCase);
+            bool unSure = string.Equals(choice, "No", StringComparison.OrdinalIgnoreCase);
+
+            while (!sure && !unSure)
+            {
+                choice = Prompter.PromptGeneric<string>("Input must be either yes, or no, try again: ",
+                                                        "Input must be a text, try again: ").Trim();
+
+                sure = string.Equals(choice, "Yes", StringComparison.OrdinalIgnoreCase);
+                unSure = string.Equals(choice, "No", StringComparison.OrdinalIgnoreCase);
+            }
+            
+            if(sure)
+            {
+                BookManager.RemoveAllBooks();
+                Console.WriteLine("\nBooks removed Successfully!\n");
+            }
         }
 
     }

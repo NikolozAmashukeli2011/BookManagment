@@ -5,8 +5,8 @@ namespace BookManagment.Models
     static class BookManager
     {
         public static HashSet<Book> SetOfBooks { get; set; } = new HashSet<Book>();
-        public static Dictionary<string, HashSet<Book>> AuthorToBooksSetMap { get; set; } = new Dictionary<string, HashSet<Book>>();
-        public static Dictionary<string, Book> TitleToBookMap { get; set; } = new Dictionary<string, Book>();
+        public static Dictionary<string, HashSet<Book>> AuthorToBooksSetMap { get; set; } = new Dictionary<string, HashSet<Book>>(StringComparer.OrdinalIgnoreCase);
+        public static Dictionary<string, Book> TitleToBookMap { get; set; } = new Dictionary<string, Book>(StringComparer.OrdinalIgnoreCase);
         public static Dictionary<int, Book> IdToBookMap { get; set; } = new Dictionary<int, Book>();
         public static SortedList<int, HashSet<Book>> YearToBooksSortedList { get; set; } = new SortedList<int, HashSet<Book>>();
 
@@ -15,6 +15,7 @@ namespace BookManagment.Models
             BookStorageData data = BookStorage.Load();
 
             Book.Count = data.IdCount;
+
             foreach (Book b in data.Books)
             {
                 AddToAll(b);
@@ -72,7 +73,7 @@ namespace BookManagment.Models
         {
             if (SetOfBooks.Count == 0)
             {
-                Console.WriteLine("There are no books.");
+                Console.WriteLine("\nThere are no books.");
             }
             else
             {
@@ -84,6 +85,28 @@ namespace BookManagment.Models
                 }
             }
 
+        }
+
+        public static void DisplayBooksByYear()
+        {
+            if (YearToBooksSortedList.Count == 0)
+            {
+                Console.WriteLine("\nThere are no books.");
+            }
+            else
+            {
+                Console.WriteLine("\n[BOOKS BY YEAR]\n");
+
+                foreach ((int year, HashSet<Book> books) in YearToBooksSortedList)
+                {
+                    Console.WriteLine($"[{year}]\n");
+
+                    foreach (Book book in books)
+                    {
+                        Console.WriteLine($"{book.ToString()}\n");
+                    }
+                }
+            }
         }
 
         public static bool GetBookByTitle(string title, out Book? foundBook)
@@ -103,10 +126,24 @@ namespace BookManagment.Models
             if (BookExists(book))
             {
                 AuthorToBooksSetMap.TryGetValue(book.Author, out HashSet<Book>? authorSet);
-                authorSet?.Remove(book);
+
+                if (authorSet?.Count <= 1)
+                {
+                    AuthorToBooksSetMap.Remove(book.Author);
+                } else 
+                {
+                    authorSet?.Remove(book);
+                }
 
                 YearToBooksSortedList.TryGetValue(book.YearOfPublish, out HashSet<Book>? yearSet);
-                yearSet?.Remove(book);
+
+                if (yearSet?.Count <= 1)
+                {
+                    YearToBooksSortedList.Remove(book.YearOfPublish);
+                } else
+                {
+                    yearSet?.Remove(book);
+                }
 
                 SetOfBooks.Remove(book);
                 TitleToBookMap.Remove(book.Title);
@@ -120,6 +157,17 @@ namespace BookManagment.Models
             {
                 return false;
             }
+        }
+
+        public static void RemoveAllBooks()
+        {
+            SetOfBooks.Clear();
+            TitleToBookMap.Clear();
+            IdToBookMap.Clear();
+            AuthorToBooksSetMap.Clear();
+            YearToBooksSortedList.Clear();
+
+            SaveAll();
         }
 
     }

@@ -28,11 +28,11 @@ do
     {
         case 1: MenuActions.AddBook(); break;
         case 2: BookManager.DisplayAllCollectionsBooks(); break;
-        case 3: MenuActions.GetTitleAndSearchBook(); break;
-        case 4: MenuActions.GetIdAndSearchBook(); break;
-        case 5: MenuActions.GetBookAndRemove(); break;
-        case 6: break;
-        case 7: break;
+        case 3: BookManager.DisplayBooksByYear(); break;
+        case 4: MenuActions.GetTitleAndSearchBook(); break;
+        case 5: MenuActions.GetIdAndSearchBook(); break;
+        case 6: MenuActions.GetBookAndRemove(); break;
+        case 7: MenuActions.RemoveAllBooks(); break;
         case 8: break;
     }
 
