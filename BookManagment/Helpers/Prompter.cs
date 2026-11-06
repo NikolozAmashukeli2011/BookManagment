@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Text;
+﻿using System.Globalization;
 
 namespace BookManagment.Helpers
 {
@@ -14,7 +11,7 @@ namespace BookManagment.Helpers
             Console.WriteLine(startingText);
             string input = Console.ReadLine();
 
-            while(!T.TryParse(input, CultureInfo.InvariantCulture, out result))
+            while (!T.TryParse(input, CultureInfo.InvariantCulture, out result))
             {
                 Console.WriteLine(errorText);
                 input = Console.ReadLine();

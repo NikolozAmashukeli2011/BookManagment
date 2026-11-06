@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BookManagment.Models
+﻿namespace BookManagment.Models
 {
     internal class Book
     {
@@ -11,8 +7,8 @@ namespace BookManagment.Models
         public string Author { get; set; } = string.Empty;
         private static int Count = 0;
         private int _YearOfPublish;
-        public int YearOfPublish 
-        { 
+        public int YearOfPublish
+        {
             get
             {
                 return _YearOfPublish;
@@ -20,10 +16,11 @@ namespace BookManagment.Models
 
             set
             {
-                if(value < 1 || value > 2026)
+                if (value < 1 || value > 2026)
                 {
                     throw new ArgumentOutOfRangeException($"{nameof(value)} must be above 0, and must not be greater then 2026.");
-                } else
+                }
+                else
                 {
                     _YearOfPublish = value;
                 }
