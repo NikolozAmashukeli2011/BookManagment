@@ -8,9 +8,9 @@ namespace BookManagment.Services
         private static readonly string FilePath = "book.json";
         private static readonly JsonSerializerOptions options = new JsonSerializerOptions() { WriteIndented = true };
 
-        public static void Save(IEnumerable<Book> books)
+        public static void Save(BookStorageData bookData)
         {
-            string json = JsonSerializer.Serialize(books, options);
+            string json = JsonSerializer.Serialize(bookData, options);
 
             try
             {
@@ -29,16 +29,16 @@ namespace BookManagment.Services
             }
         }
 
-        public static IEnumerable<Book> Load()
+        public static BookStorageData Load()
         {
-            if (!File.Exists(FilePath)) return Enumerable.Empty<Book>();
+            if (!File.Exists(FilePath)) return new BookStorageData();
 
             try
             {
                 using (StreamReader sr = new StreamReader(FilePath))
                 {
                     string json = sr.ReadToEnd();
-                    return JsonSerializer.Deserialize<IEnumerable<Book>>(json) ?? Enumerable.Empty<Book>();
+                    return JsonSerializer.Deserialize<BookStorageData>(json, options) ?? new BookStorageData();
                 }
             }
             catch (IOException ex)
@@ -54,7 +54,7 @@ namespace BookManagment.Services
                 Console.WriteLine($"The text isn't a valid JSON. {ex.Message}.");
             }
 
-            return Enumerable.Empty<Book>();
+            return new BookStorageData();
         }
     }
 }

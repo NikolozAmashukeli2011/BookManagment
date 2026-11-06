@@ -5,7 +5,18 @@
         public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
-        private static int Count = 0;
+        private static int _Count = 0;
+        public static int Count
+        {
+            get
+            {
+                return _Count;
+            }
+            set
+            {
+                _Count = Math.Max(_Count, value);
+            }
+        }
         private int _YearOfPublish;
         public int YearOfPublish
         {

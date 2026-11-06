@@ -6,10 +6,10 @@ namespace BookManagment.Helpers
     {
         public static T PromptGeneric<T>(string startingText, string errorText) where T : IParsable<T>
         {
-            T result;
+            T? result;
 
             Console.WriteLine(startingText);
-            string input = Console.ReadLine();
+            string? input = Console.ReadLine();
 
             while (!T.TryParse(input, CultureInfo.InvariantCulture, out result))
             {

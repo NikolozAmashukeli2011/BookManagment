@@ -8,18 +8,20 @@ do
 {
     Console.WriteLine("\n1. Add new book.\n" +
                      "2. Display all books info.\n" +
-                     "3. Find book by title.\n" +
-                     "4. Find book by id.\n" +
-                     "5 Remove book by id.\n" +
-                     "6. Exit.\n");
+                     "3. Display books by year.\n" +
+                     "4. Find book by title.\n" +
+                     "5. Find book by id.\n" +
+                     "6. Remove book by id.\n" +
+                     "7. Remove All Books.\n" +
+                     "8. Exit.\n");
 
     string intErrTxt = "Input must be an integer, try again: ";
 
-    choice = Prompter.PromptGeneric<int>("Input a number (1-6): ", intErrTxt);
+    choice = Prompter.PromptGeneric<int>("Input a number (1-8): ", intErrTxt);
 
-    while (choice < 1 || choice > 6)
+    while (choice < 1 || choice > 8)
     {
-        choice = Prompter.PromptGeneric<int>("Input must be a number 1-6. try again: ", intErrTxt);
+        choice = Prompter.PromptGeneric<int>("Input must be a number 1-8. try again: ", intErrTxt);
     }
 
     switch (choice)
@@ -30,8 +32,10 @@ do
         case 4: MenuActions.GetIdAndSearchBook(); break;
         case 5: MenuActions.GetBookAndRemove(); break;
         case 6: break;
+        case 7: break;
+        case 8: break;
     }
 
 
-} while (choice != 6);
+} while (choice != 8);
 

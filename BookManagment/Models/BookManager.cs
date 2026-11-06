@@ -12,10 +12,18 @@ namespace BookManagment.Models
 
         static BookManager()
         {
-            foreach (Book b in BookStorage.Load())
+            BookStorageData data = BookStorage.Load();
+
+            Book.Count = data.IdCount;
+            foreach (Book b in data.Books)
             {
                 AddToAll(b);
             }
+        }
+
+        private static void SaveAll()
+        {
+            BookStorage.Save(new BookStorageData(Book.Count, SetOfBooks));
         }
 
         private static void AddToAll(Book b)
@@ -42,7 +50,7 @@ namespace BookManagment.Models
 
         private static bool BookExists(Book b)
         {
-            if (IdToBookMap.ContainsKey(b.Id)) return true; return false;
+            if (IdToBookMap.ContainsKey(b.Id) || TitleToBookMap.ContainsKey(b.Title)) return true; return false;
         }
 
 
@@ -55,7 +63,7 @@ namespace BookManagment.Models
             else
             {
                 AddToAll(book);
-                BookStorage.Save(SetOfBooks);
+                SaveAll();
                 return true;
             }
         }
@@ -97,11 +105,14 @@ namespace BookManagment.Models
                 AuthorToBooksSetMap.TryGetValue(book.Author, out HashSet<Book>? authorSet);
                 authorSet?.Remove(book);
 
+                YearToBooksSortedList.TryGetValue(book.YearOfPublish, out HashSet<Book>? yearSet);
+                yearSet?.Remove(book);
+
                 SetOfBooks.Remove(book);
                 TitleToBookMap.Remove(book.Title);
                 IdToBookMap.Remove(book.Id);
 
-                BookStorage.Save(SetOfBooks);
+                SaveAll();
 
                 return true;
             }
